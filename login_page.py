@@ -1,0 +1,96 @@
+from tkinter import*
+import pymysql
+from PIL import ImageTk
+from tkinter import ttk, messagebox
+from tkinter import messagebox
+import sqlite3
+from register_main import Register
+# from EMP import *
+
+class Login:
+    def __init__(self,root):
+        self.root=root
+        self.root.title("Login System")
+        self.root.geometry("1350x700+0+0")
+        # self.root.resizable(False,False)
+        #-------BG Image
+        self.bg=ImageTk.PhotoImage(file="C:\\Users\\Admin\\Desktop\\practice payroll\\background.png")
+        self.bg_image=Label(self.root,image=self.bg).place(x=0,y=0,relwidth=1,relheight=1)
+
+        #------Login Frame
+        Frame_login=Frame(self.root,bg="white")
+        Frame_login.place(x=150,y=150,height=340,width=500)
+
+        title=Label(Frame_login,text="Login Here",font=("Impact",35,"bold"),fg="dark blue",bg="white").place(x=110,y=30)
+        desc = Label(Frame_login, text="Employees Login Area", font=("Goudy old style", 15, "bold"), fg="blue", bg="white").place(x=90,y=100)
+
+        lbl_user = Label(Frame_login, text="Username", font=("Goody old style", 15, "bold"),fg="gray", bg="white").place(x=90, y=140)
+        self.txt_user = Entry(Frame_login,font=("time new roman", 15), bg="light gray")
+        self.txt_user.place(x=90, y=170, width=350, height=35)
+
+        lbl_pass = Label(Frame_login, text="Password", font=("Goody old style", 15, "bold"), fg="gray",bg="white").place(x=90, y=210)
+        self.txt_pass = Entry(Frame_login,show="*",font=("time new roman", 15), bg="light gray")
+        self.txt_pass.place(x=90, y=240, width=350, height=35)
+
+        forget_button=Button(Frame_login,command=self.register,text="New User? Register Here",cursor="hand2",bg="white",fg="dark blue",bd=0,font=("times new roman",12)).place(x=90,y=280)
+        login_button = Button(self.root,command=self.login_function,cursor="hand2", text="Login", fg="white", bg="dark blue",font=("times new roman", 20)).place(x=300, y=470,width=180,height=40)
+
+
+    def login_function(self):
+        user_entry = self.txt_user.get()
+        password_entry = self.txt_user.get()
+
+        if self.txt_pass.get()=="" or self.txt_user.get()=="":
+            messagebox.showerror("Error","All field are Required",parent=self.root)
+        #elif self.txt_user.get() != user_entry:
+        #     messagebox.showerror("Error", "Invalid Username and Password", parent=self.root)
+        else:
+            conn = sqlite3.connect('record_10.db')
+            conn.row_factory = lambda cursor, row: row[0]
+            cursor_user = conn.cursor()
+            cursor_user.execute("select email from Table_2")
+
+            row_user=cursor_user.fetchall()
+            print(row_user)
+
+            cursor_password = conn.cursor()
+            cursor_password.execute("select password from Table_2")
+            row_password = cursor_password.fetchall()
+            print(row_password)
+
+            flag = 0
+            if user_entry in row_user:
+                from EMP1 import EMP
+                self.bg_image = None
+                self.bg = None
+                # self.Frame_login.configure(background="dark gray")
+                # self.root.configure(background="dark gray")
+                EMP(self.root)
+
+                # self.root.destroy()
+            else:
+                flag = 5
+            # for i in row_user:
+            #     if i == user_entry:
+            #
+            #         self.root.destroy()
+            #         break
+            #     else:
+            #         flag=5
+        if flag==5:
+            messagebox.showerror("Error", "Invalid Username and Password", parent=self.root)
+
+    def login(self):
+        print(self.txt_user.get(), self.txt_pass.get())
+
+
+    def register(self):
+        #print("Hi register")
+        register_obj = Register(self.root)
+        #register_obj.register_data()
+        #Register()
+
+if __name__=='__main__':
+    root=Tk()
+    obj=Login(root)
+    root.mainloop()
